@@ -3,10 +3,12 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,12 +23,13 @@ export default function RegisterPage() {
     }));
   };
 
-  // 🔹 Handle Form Submit (fetch → Express backend)
+  // 🔹 Handle Submit → Register User → Auto Login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // 1️⃣ Register user in Express backend
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/register`,
         {
@@ -39,13 +42,27 @@ export default function RegisterPage() {
       const data = await res.json();
 
       if (!res.ok) {
+        setLoading(false);
         return alert(data.message || "Registration failed.");
       }
 
-      alert("Registration successful! Please log in.");
-      router.push("/login");
+      // 2️⃣ Auto Login using NextAuth Credentials
+      const loginRes = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (loginRes?.error) {
+        alert("Registered but unable to auto-login. Please login manually.");
+        router.push("/login");
+        return;
+      }
+
+      // 3️⃣ Redirect to home
+      router.push("/");
     } catch (err) {
-      console.error("Register error:", err);
+      console.error("Registration error:", err);
       alert("Something went wrong!");
     } finally {
       setLoading(false);
@@ -72,12 +89,12 @@ export default function RegisterPage() {
 
             {/* Google Signup */}
             <button
-              onClick={() => alert("Google Sign-Up will be enabled after NextAuth setup.")}
+              onClick={() => signIn("google", { callbackUrl: "/" })}
               disabled={loading}
               className="btn btn-outline w-full hover:btn-primary transition-all"
             >
               {loading ? (
-                <span className="loading loading-spinner loading-sm"></span>
+                <span className="loading loading-spinner loading-sm" />
               ) : (
                 <Image
                   src="https://www.svgrepo.com/show/475656/google-color.svg"
@@ -94,7 +111,7 @@ export default function RegisterPage() {
 
             {/* Register Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              
+
               {/* Name */}
               <div className="form-control">
                 <label className="label">
@@ -117,6 +134,7 @@ export default function RegisterPage() {
                 <label className="label">
                   <span className="label-text">Email Address</span>
                 </label>
+                <br />
                 <input
                   type="email"
                   name="email"
@@ -145,7 +163,7 @@ export default function RegisterPage() {
                 />
               </div>
 
-              {/* Submit */}
+              {/* Submit Button */}
               <div className="form-control mt-6">
                 <button
                   type="submit"
@@ -170,8 +188,7 @@ export default function RegisterPage() {
 
               <p className="text-xs text-gray-500 mt-2">
                 By signing up, you agree to our{" "}
-                <a href="/terms" className="link link-primary">Terms</a>{" "}
-                and {" "}
+                <a href="/terms" className="link link-primary">Terms</a> and{" "}
                 <a href="/privacy" className="link link-primary">Privacy Policy</a>.
               </p>
             </div>

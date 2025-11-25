@@ -3,11 +3,11 @@ const nextConfig = {
   /* config options here */
   reactCompiler: true,
   images: {
-    domains: [
-      'images.unsplash.com',
-      'plus.unsplash.com', 
-      'images.pexels.com',
-      'placehold.co'
+    remotePatterns: [
+      {hostname: 'images.unsplash.com'},
+      {hostname: 'plus.unsplash.com'},
+      {hostname: 'images.pexels.com'},
+      {hostname: 'placehold.co'},      
     ],
   },
 };

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,41 +24,28 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
+    const res = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false,
+    });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        return alert(data.message || "Invalid credentials.");
-      }
-
-      localStorage.setItem("carebook_token", data.token);
-
-      router.push("/");
-    } catch (err) {
-      console.error("Login error:", err);
-      alert("Something went wrong!");
-    } finally {
+    if (res?.error) {
+      alert("Invalid email or password");
       setLoading(false);
+      return;
     }
+
+    router.push("/");
   };
 
   const handleGoogleSignIn = () => {
-    alert("Google Sign-In will be enabled after NextAuth setup.");
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
     <div className="min-h-screen bg-base-200 flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full space-y-8">
-        
         {/* Header */}
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold">
@@ -71,7 +59,6 @@ export default function LoginPage() {
         {/* Login Card */}
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-
             {/* Google Login */}
             <button
               onClick={handleGoogleSignIn}
@@ -100,6 +87,7 @@ export default function LoginPage() {
                 <label className="label">
                   <span className="label-text">Email Address</span>
                 </label>
+                <br />
                 <input
                   type="email"
                   name="email"
@@ -115,7 +103,7 @@ export default function LoginPage() {
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
-                <br/>
+                <br />
                 <input
                   type="password"
                   name="password"
@@ -167,10 +155,8 @@ export default function LoginPage() {
                 </a>
               </p>
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );
