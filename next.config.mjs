@@ -2,6 +2,14 @@
 const nextConfig = {
   /* config options here */
   reactCompiler: true,
+  images: {
+    domains: [
+      'images.unsplash.com',
+      'plus.unsplash.com', 
+      'images.pexels.com',
+      'placehold.co'
+    ],
+  },
 };
 
 export default nextConfig;
