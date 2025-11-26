@@ -2,9 +2,10 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function AppointmentBookingPage() {
+// Move the main component content to a separate component
+function AppointmentBookingContent() {
   const router = useRouter();
   const { data: session, status } = useSession();
   const params = useSearchParams();
@@ -25,23 +26,33 @@ export default function AppointmentBookingPage() {
     if (status === "unauthenticated") {
       router.push("/login");
     }
-  }, [status]);
+  }, [status, router]);
 
   // Fetch doctor by ID
   useEffect(() => {
     async function fetchDoctor() {
-      if (!doctorId) return;
+      if (!doctorId) {
+        router.push("/doctors");
+        return;
+      }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/doctors/${doctorId}`
-      );
-      const data = await res.json();
-      setDoctor(data);
-      setLoading(false);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/doctors/${doctorId}`
+        );
+        const data = await res.json();
+        setDoctor(data);
+      } catch (error) {
+        console.error("Error fetching doctor:", error);
+        alert("Doctor not found. Please select a doctor again.");
+        router.push("/doctors");
+      } finally {
+        setLoading(false);
+      }
     }
 
     fetchDoctor();
-  }, [doctorId]);
+  }, [doctorId, router]);
 
   // Handle input change
   const handleChange = (e) => {
@@ -98,10 +109,10 @@ export default function AppointmentBookingPage() {
 
       {/* Doctor Info Card */}
       <div className="card bg-base-100 shadow-md p-6 mt-6">
-        <h2 className="text-xl font-semibold">{doctor.name}</h2>
-        <p className="text-gray-600">{doctor.specialty}</p>
+        <h2 className="text-xl font-semibold">{doctor?.name}</h2>
+        <p className="text-gray-600">{doctor?.specialty}</p>
         <p className="text-sm text-gray-500">
-          Available: {doctor.availableDays.join(", ")}
+          Available: {doctor?.availableDays?.join(", ")}
         </p>
       </div>
 
@@ -160,5 +171,20 @@ export default function AppointmentBookingPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function AppointmentBookingPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="min-h-screen flex justify-center items-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      }
+    >
+      <AppointmentBookingContent />
+    </Suspense>
   );
 }

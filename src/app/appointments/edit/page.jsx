@@ -2,9 +2,10 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export default function EditAppointmentPage() {
+// Move the main content to a separate component
+function EditAppointmentContent() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const params = useSearchParams();
@@ -25,33 +26,51 @@ export default function EditAppointmentPage() {
     if (status === "unauthenticated") {
       router.push("/login");
     }
-  }, [status]);
+  }, [status, router]);
 
   // Fetch appointment data
   useEffect(() => {
     async function fetchAppointment() {
-      if (!appointmentId) return;
+      if (!appointmentId) {
+        router.push("/appointments/manage");
+        return;
+      }
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/appointments?email=${session?.user?.email}`
-      );
-      const allAppointments = await res.json();
-      const found = allAppointments.find((a) => a._id === appointmentId);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/appointments?email=${session?.user?.email}`
+        );
 
-      setAppointment(found);
-      setFormData({
-        date: found?.date || "",
-        time: found?.time || "",
-        symptoms: found?.symptoms || "",
-      });
+        if (!res.ok) throw new Error("Failed to fetch appointments");
 
-      setLoading(false);
+        const allAppointments = await res.json();
+        const found = allAppointments.find((a) => a._id === appointmentId);
+
+        if (!found) {
+          alert("Appointment not found");
+          router.push("/appointments/manage");
+          return;
+        }
+
+        setAppointment(found);
+        setFormData({
+          date: found.date || "",
+          time: found.time || "",
+          symptoms: found.symptoms || "",
+        });
+      } catch (error) {
+        console.error("Error fetching appointment:", error);
+        alert("Failed to load appointment");
+        router.push("/appointments/manage");
+      } finally {
+        setLoading(false);
+      }
     }
 
-    if (session?.user?.email) {
+    if (session?.user?.email && appointmentId) {
       fetchAppointment();
     }
-  }, [appointmentId, session]);
+  }, [appointmentId, session, router]);
 
   // Handle changes
   const handleChange = (e) => {
@@ -65,24 +84,29 @@ export default function EditAppointmentPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/appointments/${appointmentId}`,
-      {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/appointments/${appointmentId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || "Update failed");
+        return;
       }
-    );
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(data.message || "Update failed");
-      return;
+      alert("Appointment updated successfully!");
+      router.push("/appointments/manage");
+    } catch (error) {
+      console.error("Error updating appointment:", error);
+      alert("Something went wrong");
     }
-
-    alert("Appointment updated successfully!");
-    router.push("/appointments/manage");
   };
 
   if (loading || status === "loading") {
@@ -161,13 +185,38 @@ export default function EditAppointmentPage() {
             value={formData.symptoms}
             onChange={handleChange}
             className="textarea textarea-bordered"
+            placeholder="Describe your symptoms..."
           ></textarea>
         </div>
 
-        <button type="submit" className="btn btn-primary w-full">
-          Update Appointment
-        </button>
+        <div className="flex gap-4">
+          <button
+            type="button"
+            onClick={() => router.push("/appointments/manage")}
+            className="btn btn-outline flex-1"
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary flex-1">
+            Update Appointment
+          </button>
+        </div>
       </form>
     </div>
+  );
+}
+
+// Main component with Suspense boundary
+export default function EditAppointmentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex justify-center items-center">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      }
+    >
+      <EditAppointmentContent />
+    </Suspense>
   );
 }

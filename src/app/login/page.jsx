@@ -128,13 +128,6 @@ export default function LoginPage() {
               </div>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="alert alert-info mt-4 text-xs">
-              <strong>Demo Credentials:</strong> <br />
-              Email: demo@carebook.com <br />
-              Password: demo
-            </div>
-
             {/* Footer */}
             <div className="text-center mt-6">
               <p className="text-sm text-gray-600">
