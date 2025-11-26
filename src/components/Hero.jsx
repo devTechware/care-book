@@ -17,7 +17,7 @@ export default function Hero() {
           </p>
 
           <div className="flex gap-4">
-            <a href="/appointments" className="btn btn-primary btn-lg">
+            <a href="/doctors" className="btn btn-primary btn-lg">
               Book Appointment
             </a>
             <a href="#services" className="btn btn-outline btn-lg">
