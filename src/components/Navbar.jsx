@@ -10,7 +10,12 @@ export default function Navbar() {
   // Simple helper functions - no state needed
   const getAvatarUrl = (user) => {
     if (!user) return "";
-    return user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || "User")}&background=3B82F6&color=fff`;
+    return (
+      user.image ||
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        user.name || "User"
+      )}&background=3B82F6&color=fff`
+    );
   };
 
   const getUserInitial = (user) => {
@@ -20,23 +25,35 @@ export default function Navbar() {
   const links = (
     <>
       <li>
-        <Link href="/" className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary">
+        <Link
+          href="/"
+          className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary"
+        >
           Home
         </Link>
       </li>
       <li>
-        <Link href="/about-us" className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary">
+        <Link
+          href="/about-us"
+          className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary"
+        >
           About Us
         </Link>
       </li>
       <li>
-        <Link href="/doctors" className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary">
+        <Link
+          href="/doctors"
+          className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary"
+        >
           Doctors
         </Link>
       </li>
       {session && (
         <li>
-          <Link href="/appointments/manage" className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary">
+          <Link
+            href="/appointments/manage"
+            className="hover:text-primary transition-colors duration-200 font-medium text-gray-700 hover:text-primary"
+          >
             My Appointments
           </Link>
         </li>
@@ -45,13 +62,15 @@ export default function Navbar() {
   );
 
   return (
-    <div className="navbar bg-base-100/90 backdrop-blur-md sticky top-0 z-50 border-b shadow-sm">
-      
+    <div className="navbar bg-base-100/90 backdrop-blur-md sticky top-0 z-50 border-b border-base-200 shadow-sm">
       {/* LEFT SIDE */}
       <div className="navbar-start">
         {/* Mobile Dropdown */}
         <div className="dropdown lg:hidden">
-          <label tabIndex={0} className="btn btn-ghost btn-circle hover:bg-base-200 transition-colors">
+          <label
+            tabIndex={0}
+            className="btn btn-ghost btn-circle hover:bg-base-200 transition-colors"
+          >
             <svg
               className="h-5 w-5"
               fill="none"
@@ -143,7 +162,9 @@ export default function Navbar() {
                     className="rounded-full"
                   />
                 ) : (
-                  <span className="text-sm font-bold">{getUserInitial(session.user)}</span>
+                  <span className="text-sm font-bold">
+                    {getUserInitial(session.user)}
+                  </span>
                 )}
               </div>
             </label>
@@ -173,32 +194,56 @@ export default function Navbar() {
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 truncate">{session.user?.name}</p>
-                    <p className="text-xs text-gray-500 truncate">{session.user?.email}</p>
+                    <p className="font-semibold text-gray-900 truncate">
+                      {session.user?.name}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {session.user?.email}
+                    </p>
                   </div>
                 </div>
               </li>
 
               {/* Menu Items */}
               <li className="p-2">
-                <Link 
-                  href="/appointments/manage" 
+                <Link
+                  href="/appointments/manage"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors text-gray-700 font-medium"
                 >
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                  <svg
+                    className="w-5 h-5 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
                   My Appointments
                 </Link>
               </li>
 
               <li className="p-2">
-                <Link 
-                  href="/doctors" 
+                <Link
+                  href="/doctors"
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-base-200 transition-colors text-gray-700 font-medium"
                 >
-                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  <svg
+                    className="w-5 h-5 text-primary"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
                   </svg>
                   Find Doctors
                 </Link>
@@ -211,8 +256,18 @@ export default function Navbar() {
                   onClick={() => signOut({ callbackUrl: "/" })}
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-error/10 text-error transition-colors w-full text-left font-medium"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
                   </svg>
                   Logout
                 </button>

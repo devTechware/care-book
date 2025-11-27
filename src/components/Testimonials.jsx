@@ -98,10 +98,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section
-      id="testimonials"
-      className="py-20 bg-linear-to-br from-gray-50 to-blue-50/30"
-    >
+    <section id="testimonials" className="py-20  to-blue-50/30">
       <div className="container mx-auto px-6">
         {/* Header Section */}
         <div className="text-center mb-16 space-y-4">
@@ -124,7 +121,7 @@ export default function Testimonials() {
         {/* Main Testimonial Card */}
         <div className="max-w-6xl mx-auto">
           <div
-            className="relative bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden"
+            className="relative bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden"
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
           >
@@ -254,7 +251,7 @@ export default function Testimonials() {
               </div>
 
               {/* Visual Section */}
-              <div className="bg-linear-to-br from-primary to-blue-600 relative overflow-hidden flex items-center justify-center p-8">
+              <div className="bg-linear-to-br from-indigo-700 to-sky-700 relative overflow-hidden flex items-center justify-center p-8">
                 <div className="text-center text-white space-y-6 relative z-10">
                   <div className="text-6xl mb-4">🏥</div>
                   <h3 className="text-2xl font-bold">Join Our Community</h3>

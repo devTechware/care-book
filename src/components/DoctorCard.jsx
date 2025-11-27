@@ -5,7 +5,7 @@ export default function DoctorCard({ doctor }) {
   return (
     <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl border border-gray-100 overflow-hidden transition-all duration-500 hover:-translate-y-2">
       {/* Image Section */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-86 overflow-hidden">
         <Image
           src={doctor.image}
           alt={doctor.name}

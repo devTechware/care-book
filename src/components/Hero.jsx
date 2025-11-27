@@ -1,9 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 export default function Hero() {
   return (
-    <div className="hero min-h-[85vh] bg-base-200">
+    <div className="hero min-h-[85vh] bg-sky-50">
       <div className="hero-content flex-col lg:flex-row gap-10 w-full">
         {/* Left Content - Takes 50% */}
         <div className="lg:w-1/2 space-y-6">
@@ -17,9 +18,9 @@ export default function Hero() {
           </p>
 
           <div className="flex gap-4">
-            <a href="/doctors" className="btn btn-primary btn-lg">
+            <Link href="/doctors" className="btn btn-primary btn-lg">
               Book Appointment
-            </a>
+            </Link>
             <a href="#services" className="btn btn-outline btn-lg">
               Explore Services
             </a>
@@ -29,11 +30,11 @@ export default function Hero() {
         {/* Right Image - Takes 50% */}
         <div className="lg:w-1/2 w-full">
           <Image
-            src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=800&auto=format"
+            src="https://i.ibb.co.com/nHGfF32/hero-img.png"
             alt="Doctor Illustration"
             className="w-full h-64 lg:h-80 object-cover drop-shadow-xl rounded-lg"
             width={600}
-            height={400}
+            height={600}
             priority
           />
         </div>
