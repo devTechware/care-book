@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, use } from "react";
 
 export default function DoctorDetailsPage({ params }) {
-  // Unwrap async params (Next.js 15+)
   const { id } = use(params);
 
   const router = useRouter();
